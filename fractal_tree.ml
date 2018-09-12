@@ -10,7 +10,7 @@ type ftree = Tree of _root * _branch;;
 
 let width = 400 and height = 400 ;;
 
-let angle ref = 0. ;;
+let angle = ref 0. ;;
 
 type log = float * float ;;
 
