@@ -10,7 +10,7 @@ type ftree = Tree of _root * _branch;;
 
 let width = 400 and height = 400 ;;
 
-let ref angle = 0. ;;
+let angle ref = 0. ;;
 
 type log = float * float ;;
 
@@ -73,7 +73,7 @@ let main : unit =
 	for i=0 to 360 do
 	colorMode white black ;
 	(* define the tree *)
-	let t = Tree( R(120) , N(80. , 0) ) in
+	let t = Tree( R(120) , N(80. , 0. ) ) in
 	let p = root t in
 	angle := !angle +. (tf i);
 	branch t 10 p ; done ;; 
