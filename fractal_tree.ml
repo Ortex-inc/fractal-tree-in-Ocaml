@@ -16,9 +16,7 @@ type log = float * float ;;
 
 let tf = float_of_int and ti = int_of_float ;;
 
-let pi = 3.141592 ;;
-
-let degree (r: float) = (pi *. r ) /. 180. ;;
+let degree (r: float) = let pi = 3.14 in (pi *. r ) /. 180. ;;
 
 (** Functions **)
 (* draw a window *)
@@ -43,8 +41,9 @@ let root (t: ftree) : log = match t with
 	| Tree ( R(r) , _ ) -> (tf (width/2)) , 0. ;;
 
 (* draw branch 's tree 1 then 2 then 4 .. *)
-let rec branch (t: ftree) (itr: int) (prev: log ) = 
-	match itr , t , prev with
+(* p is the last point i had drawed a branch before i use it to draw other and update it *)
+let rec branch (t: ftree) (itr: int) (p: log ) = 
+	match itr , t , p with
 	| 0 , _ , _ -> ()
 	| e , Tree (R(r) , N(l,a)) , (x,y) ->
 
