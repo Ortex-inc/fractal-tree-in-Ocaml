@@ -1,5 +1,8 @@
 open Graphics ;;
 #load "graphics.cma" ;;
+#load "unix.cma" ;;
+
+let fps = 5. ;;
 
 (** Types **)
 type _root = R of int ;;
@@ -55,27 +58,46 @@ let rec branch (t: ftree) (itr: int) (p: log ) =
 	branch (Tree (R(r) , N((l *. 0.67), (a +. !angle) ) )) (itr-1) (rx,ry);
 	branch (Tree (R(r) , N((l *. 0.67), (a -. !angle) ) )) (itr-1) (rx,ry) ;;
 
-(* bool for exit program *)
-let exec = true ;;
+module Time = struct
 
-(* exec main function untill i exit program *)
-let rec loop main exec : unit =
-	match exec with
-	| true -> main ; loop main exec
-	| _ -> () 
+let sec = Unix.time() ;;
+let msec = Unix.gettimeofday() *. 1000. ;;
+
+let wait (ms : float) : unit =
+	let r = msec in
+	let t = ref r and t_old = ref r in
+		while !t < (!t_old +. (10000. /. ms) ) do 
+			t := !t +. 0.001 ;
+			done ;;
+end;;
+
+(* bool for exit program *)
+let setScreen =
+  open_graph "";
+  resize_window width height;
+  set_window_title "Fractal Tree" ;;
+  
+let exec = 
+	let s = wait_next_event [Button_down; Key_pressed] 
+     in if s.Graphics.keypressed then
+      false else true ;;
 
 (* main function *)
 let main : unit = 
 
-	setScreen width height "Fractal Tree";
-	(* the for change angle from 0 to 360 to show each fractal form *)
-	for i=0 to 360 do
+	while exec do
+
 	colorMode white black ;
 	(* define the tree *)
 	let t = Tree( R(120) , N(80. , 0. ) ) in
 	let p = root t in
-	angle := !angle +. (tf i);
-	branch t 10 p ; done ;; 
+	angle := tf (( (ti !angle) + 1) mod 360) ;
+	branch t 10 p ;
+	
+	Time.wait fps;
+	done;;
 
 (** Exec **)
-loop main exec ;;
+
+setScreen ;;
+main exec ;;
